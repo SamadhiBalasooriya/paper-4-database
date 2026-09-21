@@ -1,0 +1,39 @@
+{
+    "latex-workshop.latex.autoBuild.run":  "onSave",
+    "latex-workshop.latex.outDir":  "%DIR%",
+    "latex-workshop.latex.recipe.default":  "first",
+    "latex-workshop.latex.tools":  [
+                                       {
+                                           "name":  "pdflatex-user-miktex",
+                                           "command":  "C:\\Users\\slok0019\\AppData\\Local\\Programs\\MiKTeX\\miktex\\bin\\x64\\pdflatex.exe",
+                                           "args":  [
+                                                        "-synctex=1",
+                                                        "-interaction=nonstopmode",
+                                                        "-file-line-error",
+                                                        "-halt-on-error",
+                                                        "--output-directory=%DIR%",
+                                                        "%DOC%"
+                                                    ]
+                                       },
+                                       {
+                                           "name":  "bibtex-user-miktex",
+                                           "command":  "C:\\Users\\slok0019\\AppData\\Local\\Programs\\MiKTeX\\miktex\\bin\\x64\\bibtex.exe",
+                                           "args":  [
+                                                        "%DOCFILE%"
+                                                    ]
+                                       }
+                                   ],
+    "latex-workshop.latex.recipes":  [
+                                         {
+                                             "name":  "pdflatex + bibtex (user MiKTeX)",
+                                             "tools":  [
+                                                           "pdflatex-user-miktex",
+                                                           "bibtex-user-miktex",
+                                                           "pdflatex-user-miktex",
+                                                           "pdflatex-user-miktex"
+                                                       ]
+                                         }
+                                     ],
+    "latex-workshop.view.pdf.viewer":  "tab"
+}
+
