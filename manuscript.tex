@@ -99,20 +99,27 @@ Therefore, prior knowledge or reliable estimation of key modal parameters is ess
 % and provide an appropriate basis for probabilistic assessment and
 % code-model calibration.
 
-The current vibration serviceability codes and guidlines represent pedestrian loading through simplified load models to enable practical application at the design stage \cite{BSI2008NAEN1991,EN1991_2_2023,JGJT441_2019,CJJ69_2017_draft,FIB2005Footbridges,setra2006,feldman2008hivoss}.
-Since these load models are used to assess the vibration response of a wide range of footbridges, their adequacy should be assessed primarily in terms of the resulting structural response, rather than solely through their applied pedestrin loading.
+The current vibration serviceability codes and guidelines represent pedestrian loading through simplified load models to enable practical application at the design stage \cite{BSI2008NAEN1991,EN1991_2_2023,JGJT441_2019,CJJ69_2017_draft,FIB2005Footbridges,setra2006,feldman2008hivoss}.
+Since these load models are used to assess the vibration response of a wide range of footbridges, their adequacy should be evaluated in terms of the resulting structural response, rather than solely through how accurately they reproduce pedestrian loading.
 
-The key limitation of many existing sinmplified load models is that pedestrians are represented as moving forces, with the corresponding load models calibrated without explicitly acounting for the dynamic interaction between the pedestrians and the supporting structure \cite{caprani2016formulation,shahabpoor2016interaction,van2017impact}.
-Human structure interactions (HSI) alters the dynamic properties of the coupled pedestrian structure system, and can lead to structural responses that differ substantially from those predicted by simplified load models.
+The key limitation of many existing simplified load models is that pedestrians are represented as moving forces, with the corresponding load models calibrated without explicitly accounting for the dynamic interaction between the pedestrians and the supporting structure \cite{caprani2016formulation,shahabpoor2016interaction,van2017impact}.
+Human--structure interaction (HSI) alters the dynamic properties of the coupled pedestrian--structure system, and can lead to structural responses that differ substantially from those predicted by simplified load models.
 These effects can be particularly important for lightweight structures and for cases with relatively large pedestrian-to-structure mass ratios \cite{van2021simplified,van2017impact}. 
 Consequently, simplified code models calibrated without accounting for HSI may exhibit systematic response bias that varies with the dynamic characteristics of the bridge, motivating their reassessment and response-based recalibration.
 
 Response-based calibration provides such a framework by comparing the response predicted by the simplified design model with that obtained from experimental observations or a higher-fidelity reference model over a prescribed range of structural properties.
 Previous studies have adopted this approach by evaluating simplified pedestrian loading or vibration serviceability models over ranges of natural frequency, damping and other structural parameters \cite{bassoli2018spectral,ahmadi2021experimental,van2017impact, van2021simplified,strobbe2026vibration}.
-However, these structural domains considered in such studies have generally been defined using prescribed parameter ranges, idealised structural configurations, or regularly sampled parameter combinations rather than through the observed statistical distribution of dynamic properties within the footbridge population. 
-As a result, the contribution of different structural conditions to the overall assessment is determined by the adopted sampling scheme, rather than by their prevalence in practice.
+However, these structural domains considered in such studies have generally been defined using prescribed parameter ranges, idealised structural configurations, or regularly sampled parameter combinations rather than using the observed statistical distribution of dynamic properties within the footbridge population.
+As a result, some structural conditions may receive disproportionate importance in the calibration simply because of the adopted sampling scheme, rather than because they are common in practice.
 
 For code-model calibration, it is important to know not only the range of structural properties that may occur, but also how common these properties are within the footbridge population.
+Several recent studies have made valuable efforts to compile databases of footbridge characteristics and modal properties. Oliveira et al. (2014) \cite{oliveira2014fundamental} reported fundamental frequencies for 79 footbridges in Portugal, while Van Nimmen (2015) reviewed data for more than 160 footbridges \cite{vanNimmen2015,zall2018}.
+Wei et al. (2019) \cite{wei2019measured} assembled dynamic-property data for 138 footbridges, and Gong et al. (2024) \cite{gong2024basic} more recently studied a collection of footbridges in China.
+These studies provide a substantial starting point, but their datasets were assembled for different purposes, report different properties, and include some of the same bridges.
+Further observations are dispersed across many individual case studies \cite{vzivanovic2005human,tadeu2022vibration,lievens2016robust,strobbe2026vibration}.
+Consolidating these records, identifying duplicate bridges, and recording which modal properties are available would provide a clearer basis for estimating their observed distributions.
+
+
 % ----------------------------  ---------------------------------------------
 % PARAGRAPH 2 — WHAT DATA ALREADY EXIST
 % -------------------------------------------------------------------------
@@ -165,7 +172,15 @@ For code-model calibration, it is important to know not only the range of struct
 % DO NOT introduce priors/posteriors/equations here.
 %
 % Those belong in the methodology.
+This study addresses the above gap in two stages.
+First, a systematic literature search and screening procedure following the PRISMA framework is used to identify relevant publications and compile bridge-level data on key modal properties.
+Second, hierarchical Bayesian regression is used to probabilistically characterise incompletely observed modal properties while retaining the uncertainty associated with their estimation.
+The resulting database provides a population-level description of key footbridge modal properties and their relationships, allowing the prevalence of different combinations of natural frequency, damping ratio and modal mass to be quantified.
+Such information provides a statistical basis for distinguishing commonly occurring structural conditions from those that are comparatively rare.
+This, in turn, can support the selection and weighting of representative structural parameter combinations used in vibration-serviceability assessment and code-model calibration.
 
+Accordingly, this study aims to characterise the modal properties of the footbridge population using a systematically assembled bridge-level database of approximately 250 structures.
+The principal contributions of the study are: (i) the systematic identification and consolidation of published footbridge dynamic-property data; (ii) the construction of a large, non-duplicated database of bridge-level modal properties; (iii) the probabilistic treatment of incompletely observed damping and modal-mass information using hierarchical Bayesian regression; and (iv) the population-level characterisation of modal properties relevant to vibration-serviceability assessment and code-model calibration.
 
 % -------------------------------------------------------------------------
 % PARAGRAPH 5 — WHY THE RESULT MATTERS
