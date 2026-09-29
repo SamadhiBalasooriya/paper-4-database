@@ -63,41 +63,10 @@
 
 \section{Introduction}
 
-% -------------------------------------------------------------------------
-% PARAGRAPH 1 — ENGINEERING MOTIVATION
-% -------------------------------------------------------------------------
-%
-% Footbridge vibration serviceability depends strongly on modal properties
-% such as natural frequency, damping ratio and modal mass.
-%
-% Population-level knowledge of these properties is required when defining
-% representative parameter ranges and weighting different bridge conditions
-% in probabilistic assessment and code calibration.
-
 The increasing adoption of light weight materials and slender structural forms has made modern footbridges more susceptible to human-induced vibrations. 
 As a result, vibration serviceability under pedestrian loading has become an important design consideration to ensure acceptable structural performance and user comfort.
 Such assessment depends on several aspects of the bridge, including its structural form, material properties, and dynamic characteristics \cite{ahmadi2018framework,ahmadi2019assessment,ahmadi2021experimental}. 
 Therefore, prior knowledge or reliable estimation of key modal parameters is essential at the design stage, as these parameters provide an initial basis for assessing the feasibility of a proposed design \cite{vzivanovic2007finite,van2014vibration,tadeu2022vibration,reynolds2025operational}.
-% -------------------------------------------------------------------------
-% PARAGRAPH 2 — NEED FOR POPULATION-LEVEL INFORMATION FOR CODE CALIBRATION
-% -------------------------------------------------------------------------
-%
-% Vibration-serviceability assessment is generally performed using design
-% codes and guidelines that provide simplified procedures and acceptance
-% criteria intended for application across a broad range of footbridges.
-%
-% Such provisions therefore need to represent the range of structural
-% characteristics encountered within the bridge population, rather than
-% the behaviour of an individual structure.
-%
-% The calibration of these provisions requires knowledge of the statistical
-% distribution of the modal properties that govern vibration response,
-% including natural frequency, damping ratio and modal mass.
-%
-% Population-level information is therefore required to identify representative
-% parameter ranges, quantify the prevalence of different bridge conditions,
-% and provide an appropriate basis for probabilistic assessment and
-% code-model calibration.
 
 The current vibration serviceability codes and guidelines represent pedestrian loading through simplified load models to enable practical application at the design stage \cite{BSI2008NAEN1991,EN1991_2_2023,JGJT441_2019,CJJ69_2017_draft,FIB2005Footbridges,setra2006,feldman2008hivoss}.
 Since these load models are used to assess the vibration response of a wide range of footbridges, their adequacy should be evaluated in terms of the resulting structural response, rather than solely through how accurately they reproduce pedestrian loading.
@@ -119,59 +88,6 @@ These studies provide a substantial starting point, but their datasets were asse
 Further observations are dispersed across many individual case studies \cite{vzivanovic2005human,tadeu2022vibration,lievens2016robust,strobbe2026vibration}.
 Consolidating these records, identifying duplicate bridges, and recording which modal properties are available would provide a clearer basis for estimating their observed distributions.
 
-
-% ----------------------------  ---------------------------------------------
-% PARAGRAPH 2 — WHAT DATA ALREADY EXIST
-% -------------------------------------------------------------------------
-%
-% Previous studies have assembled datasets of measured footbridge dynamic
-% properties.
-%
-% These databases have been valuable in understanding typical frequencies,
-% damping ratios and other structural characteristics.
-%
-% However, they have been developed at different times and for different
-% purposes, and their bridge populations are only partially overlapping.
-
-
-% -------------------------------------------------------------------------
-% PARAGRAPH 3 — THE GAP
-% -------------------------------------------------------------------------
-%
-% Consequently, available footbridge data remain fragmented across the
-% literature.
-%
-% More recent bridges and measurements reported after earlier database
-% studies are not necessarily represented, while different publications
-% report different subsets of modal and structural properties.
-%
-% In particular, damping ratio and modal mass are frequently unavailable,
-% resulting in an incomplete representation of the bridge population.
-%
-% KEY GAP:
-% A systematically assembled and probabilistically characterised population
-% dataset of footbridge modal properties is currently lacking.
-
-
-% -------------------------------------------------------------------------
-% PARAGRAPH 4 — GENERAL APPROACH
-% -------------------------------------------------------------------------
-%
-% This study addresses the above gap in two stages.
-%
-% First, a systematic literature search and screening procedure following
-% the PRISMA framework is used to identify relevant publications and extract
-% bridge-level dynamic-property data.
-%
-% Second, hierarchical Bayesian regression is used to probabilistically
-% characterise incompletely observed modal properties while retaining the
-% uncertainty associated with their estimation.
-%
-% DO NOT explain PRISMA stages here.
-% DO NOT explain partial pooling here.
-% DO NOT introduce priors/posteriors/equations here.
-%
-% Those belong in the methodology.
 This study addresses the above gap in two stages.
 First, a systematic literature search and screening procedure following the PRISMA framework is used to identify relevant publications and compile bridge-level data on key modal properties.
 Second, hierarchical Bayesian regression is used to probabilistically characterise incompletely observed modal properties while retaining the uncertainty associated with their estimation.
@@ -182,42 +98,69 @@ This, in turn, can support the selection and weighting of representative structu
 Accordingly, this study aims to characterise the modal properties of the footbridge population using a systematically assembled bridge-level database of approximately 250 structures.
 The principal contributions of the study are: (i) the systematic identification and consolidation of published footbridge dynamic-property data; (ii) the construction of a large, non-duplicated database of bridge-level modal properties; (iii) the probabilistic treatment of incompletely observed damping and modal-mass information using hierarchical Bayesian regression; and (iv) the population-level characterisation of modal properties relevant to vibration-serviceability assessment and code-model calibration.
 
-% -------------------------------------------------------------------------
-% PARAGRAPH 5 — WHY THE RESULT MATTERS
-% -------------------------------------------------------------------------
-%
-% The resulting dataset provides a population-level description of important
-% modal properties and their relationships.
-%
-% This allows the prevalence of different combinations of natural frequency,
-% damping and modal mass to be quantified.
-%
-% Such information can provide a statistical basis for selecting and
-% weighting structural parameter combinations used in vibration-serviceability
-% assessment and code calibration.
-
-
-% -------------------------------------------------------------------------
-% PARAGRAPH 6 — AIM AND CONTRIBUTIONS
-% -------------------------------------------------------------------------
-%
-% Accordingly, this study aims to characterise the modal properties of the
-% footbridge population using a large systematically assembled sample of
-% approximately 250 bridges.
-%
-% The principal contributions are:
-%
-% (1) systematic identification and consolidation of published footbridge
-%     dynamic-property data;
-%
-% (2) construction of a large bridge-level database;
-%
-% (3) probabilistic treatment of missing damping and modal-mass information
-%     using hierarchical Bayesian regression; and
-%
-% (4) population-level characterisation of modal properties relevant to
-%     vibration-serviceability assessment and code calibration.
 \section{Systematic database development} 
+
+The footbridge database was developed through a systematic literature identification and screening process following the PRISMA framework \cite{page2021prisma}.
+The procedure includes publication identification, title and abstract screening, full text eligibility assessment, bridge level data extraction and consolidation of information into a single database.
+The following subsections describe the search and screening procedure, the data extraction process, and the resulting database.
+
+\subsection{Review scope and search strategy}
+
+The systematic review aimed to identify published investigations reporting structural and dynamic properties of full scale pedestrian bridges.
+The principal variables of interest were bridge span, deck width, funcdermental vertical natural frequency, vertical damping ratio, Modal mass, structural form, cross section, and construcion materials.
+
+Scopus was selected as the literature database because of its broad coverage of peer-reviewed engineering research \cite{burnham2006scopus}.
+The candidate publications were identified using Elsevier Scopus search API through title, abstract, and keyword feilds.
+The search used a broader combination of pedestrian-bridge terminology with terms relating to natural frequency, damping, and structural mass, experimental dynamic testing, ambient vibration testing, operational modal analysis, model updating and vibration serviceability.
+
+The search returned 727 bibilographic records before deduplication.
+Dubplicate records were identified using DOI, Scopus EID.
+Following deduplication, 697 unique records were retained for screening.
+A DOI was available for 529 records, while Scopus EID were retained for publications without a DOI.
+Scopus records were used to identify and screen publications, while numerical bridge properties were extracted from the full texts of the eligible studies.
+
+\subsection{Eligibility criteria}
+
+Publications were considered eligible when they reported an investigation of an existing, full-scale pedestrian bridge and contained experimentally measured or identified structural or modal properties that could be associated with a specific structure.
+Studies based only on laboratory specimens, scaled models, hypothetical structures, or purely numerical investigations were excluded. 
+Publications were also excluded where the reported frequency could not be identified as a structural vertical natural frequency relevant to the present study.
+For inclusion in the bridge-level database, sufficient information was required to identify the bridge and extract its fundamental vertical natural frequency together with the geometric information required for the population analysis.
+Damping ratio, modal mass, structural form, cross-section, and construction material were extracted where available but were not mandatory for inclusion.
+
+\subsection{Study screening and bridge identification}
+
+Following bibliographic deduplication, the 697 unique publications were retained for full-text screening. 
+The full-text documents were processed using a semi-automated Python workflow.
+PDF text was extracted using PyMuPDF and subsequently searched for evidence of full-scale pedestrian bridge investigations and relevant structural and modal properties.
+
+The extracted text was searched for bridge names and terminology associated with natural frequency, damping, modal mass, mode shapes, and experimental vibration testing.
+Reference sections were excluded from the search to reduce the likelihood of identifying bridges mentioned only in cited literature.
+
+During the screening stage, each publication was counted as a single record, regardless of how many bridges it investigated. 
+During data extraction, however, each individual bridge was treated as a separate database record. 
+Consequently, a single publication could contribute data for several bridges.
+
+Each detected bridge was assigned a separate candidate record containing its source publication, bridge identity, and associated structural and modal-property evidence. 
+Candidate records were subsequently reviewed against the bridge-level inclusion requirements defined in Section 2.2 before consolidation.
+
+\subsection{Bridge-level data extraction and consolidation}
+
+For each candidate bridge, the extracted information included bridge name and location, span, deck width, fundamental vertical natural frequency, vertical damping ratio, modal mass, structural form, cross-section, and construction material. 
+Numerical quantities were converted to consistent units before consolidation.
+
+Because the same physical bridge could be reported in several publications, repeated bridge records were identified using bridge name, location, geometry, structural characteristics, reported modal properties, and source references. 
+Potential matches across different publications were reviewed manually rather than being automatically removed.
+
+Where several publications referred to the same physical bridge, the available information was consolidated into a single bridge-level record. 
+The original experimental investigation was retained as the principal source where available, while additional information from later publications was incorporated where appropriate.
+
+\subsection{Resulting database and data completeness}
+
+Following bridge-level screening and duplicate reconciliation, 248 unique footbridges were retained in the final database.
+Fundamental vertical natural frequency and span were available for all bridges, while deck width was available for 240 bridges.
+Vertical damping ratios were reported for 102 bridges, whereas mass related information was considerably less complete, with modal mass information available for only 30 bridges and linear mass available for 25 bridges.
+Structural form and material information were available for all bridges, while cross-section information was available for 242 bridges.
+The resulting differences in data completeness, particularly for damping and mass-related properties, motivated the probabilistic treatment introduced in the following section.
 
 \section{Bayesian treatment of incomplete bridge data}
 
