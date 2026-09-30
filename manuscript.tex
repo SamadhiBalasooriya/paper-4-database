@@ -8,10 +8,13 @@
 \usepackage{adjustbox}
 \usepackage{multirow}
 \usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
 \usepackage[left]{lineno}
 \usepackage[unicode]{hyperref}
 \usepackage[noabbrev,nameinlink]{cleveref}
 \usepackage{amssymb}
+% In the preamble
+\usepackage{longtable,booktabs,pdflscape,array,natbib}
 % ============================================================
 % JOURNAL / DOCUMENT SETTINGS
 % ============================================================
@@ -162,7 +165,143 @@ Vertical damping ratios were reported for 102 bridges, whereas mass related info
 Structural form and material information were available for all bridges, while cross-section information was available for 242 bridges.
 The resulting differences in data completeness, particularly for damping and mass-related properties, motivated the probabilistic treatment introduced in the following section.
 
+\begin{figure}[htbp]
+    \centering
+    \resizebox{0.5\textwidth}{!}{\input{figures/prisma_flow_diagram.tex}}
+    \caption{PRISMA flow diagram for the systematic identification, screening, and consolidation of footbridge data.}
+    \label{fig:prisma_flow}
+\end{figure}
+
+
 \section{Bayesian treatment of incomplete bridge data}
+
+The database contains complete records of fundamental vertical natural frequency and span, but damping and mass-related properties are reported for only a subset of bridges. 
+Analysing only bridges with complete records would therefore exclude a substantial proportion of the database.
+To retain these bridges in the population analysis, Bayesian regression models were developed to infer the unreported properties from the available bridge characteristics. 
+The missing values were represented by posterior predictive distributions, allowing uncertainty in both regression parameters and remaining variability between bridges to be propagated into resulting population distributions. 
+
+\subsection{Hierarchical model for vertical damping ratio}
+
+Let \(\xi_{i}\) denote the damping ratio of the first vertical mode for the \(i\)-th bridge.
+The damping ratios \(\xi_i\) differ between bridges, reflecting differences in their construction materials, structural forms, and other factors.
+However, the database does not provide sufficient details to model the physical mechanisms governing damping in each bridge.
+Statistical modelling offers a means of estimating unreported values from observed data without explicitly identifying the underlying mechanisms \cite{mcelreath2018statistical}.
+Accordingly, a Bayesian hierarchical regression model was fitted to the reported damping ratios, using natural frequency, span, and material as predictors that are available in the database.
+The fitted model was then used to obtain posterior predictive distributions for unreported damping ratios, accounting for both uncertainty in the regression parameters and remaining variability between bridges.
+
+For each bridge, the available predictor information is \({x}_i=\{f_i,L_i,m_i\}\), where $f_i$ is the fundamental vertical natural frequency, $L_i$ is the span, and $m_i$ denotes the material category.
+Let $\mathcal{O}$ and $\mathcal{M}$ denote the sets of bridges
+with observed and missing damping ratios, respectively.
+The data used to estimate the model parameters are then
+\begin{equation}
+    \mathcal{D}_{\mathrm{obs}}
+    = \{(\xi_i,\mathbf{x}_i):i\in\mathcal{O}\}.
+\end{equation}
+
+Damping ratios were modelled using a lognormal distribution to ensure positive predictions, with the corresponding log damping ratios assumed to follow a normal distribution:
+\begin{equation}
+    \log\xi_i \mid \eta_i,\sigma
+    \sim \mathcal{N}(\eta_i,\sigma^2),
+\end{equation}
+where $\eta_i$ is the conditional mean of log damping ratio and $\sigma$ describes the remaining variability between bridges.
+The conditional mean was expressed as
+\begin{equation}
+    \eta_i =
+    \alpha+\beta_f x_{f,i}+\beta_L x_{L,i}+a_{m_i},
+\end{equation}
+where $\alpha$ is the common intercept, $\beta_f$ and $\beta_L$ describe the associations with natural frequency and span, and $a_{m_i}$ is the effect of the material category of bridge $i$.
+The predictors $f_i$ and $L_i$ were logarithmically transformed and standardised as,
+\begin{equation}
+    x_{f,i} =
+    \frac{\log f_i-\overline{\log f}}{s_{\log f}},
+    \qquad
+    x_{L,i} =
+    \frac{\log L_i-\overline{\log L}}{s_{\log L}}.
+\end{equation}
+Here, the overbars and $s$ denote the means and standard deviations of the corresponding log-transformed predictors.
+
+The material categories contain different numbers of observed damping ratios.
+Estimating an independent model for each category would therefore provide limited information for sparsely represented materials.
+Instead, material effects were assigned a shared distribution,
+\begin{equation}
+    a_m \mid \sigma_{\mathrm{mat}}
+    \sim \mathcal{N}(0,\sigma_{\mathrm{mat}}^2).
+\end{equation}
+This hierarchical structure allows information to be partially pooled across materials while retaining differences between categories.
+The parameter $\sigma_{\mathrm{mat}}$ controls the variation in material effects around the common baseline.
+
+Let $\boldsymbol{\theta}$ contain the regression coefficients, material effects, and dispersion parameters:
+\begin{equation}
+    \boldsymbol{\theta}
+    = \{\alpha,\beta_f,\beta_L,\mathbf{a},
+       \sigma,\sigma_{\mathrm{mat}}\}.
+\end{equation}
+Assuming conditional independence between bridge records, the likelihood of the observed log damping ratios is
+\begin{equation}
+    \mathcal{L}(\mathcal{D}_{\mathrm{obs}}\mid\boldsymbol{\theta})
+    =
+    \prod_{i\in\mathcal{O}}
+    \mathcal{N}\!\left(
+        \log\xi_i\mid\eta_i,\sigma^2
+    \right).
+\end{equation}
+The posterior distribution follows from Bayes' rule:
+\begin{equation}
+    p(\boldsymbol{\theta}\mid\mathcal{D}_{\mathrm{obs}})
+    \propto
+    \mathcal{L}(\mathcal{D}_{\mathrm{obs}}\mid\boldsymbol{\theta})
+    p(\boldsymbol{\theta}).
+\end{equation}
+For a bridge with unreported damping, its known predictors were used to obtain the posterior predictive distribution:
+\begin{equation}
+    p(\xi_i\mid\mathbf{x}_i,\mathcal{D}_{\mathrm{obs}})
+    =
+    \int
+    p(\xi_i\mid\mathbf{x}_i,\boldsymbol{\theta})
+    p(\boldsymbol{\theta}\mid\mathcal{D}_{\mathrm{obs}})
+    \,\mathrm{d}\boldsymbol{\theta},
+    \qquad i\in\mathcal{M}.
+\end{equation}
+This distribution accounts for both uncertainty in the model parameters and the remaining variability between bridges. 
+Samples from these distributions were used to represent the missing damping ratios in the subsequent population analysis.
+
+\subsection{Bayesian estimation of pedestrian-to-structure
+mass-ratio probabilities}
+
+The pedestrian-to-structure mass ratio depends on both the bridge modal properties and the distribution of pedestrians.
+The present analysis therefore considers the prevalence of mass ratios at a specified pedestrian density $\rho$.
+
+For bridge $i$, assuming pedestrians are uniformly distributed over the occupied deck area $A_i$, the pedestrian modal mass associated with the first vertical mode is
+\begin{equation}
+    M_{p,i}^{*}(\rho)
+    =
+    \rho\,\bar m_p
+    \int_{A_i}\phi_i^2(\mathbf{x})\,\mathrm{d}A,
+\end{equation}
+where $\bar m_p$ is the assumed mean pedestrian mass and $\phi_i$ is the corresponding mode shape. 
+The pedestrian-to-structure modal mass ratio is then,
+\begin{equation}
+    \mu_i(\rho)
+    =
+    \frac{M_{p,i}^{*}(\rho)}{M_{b,i}^{*}},
+\end{equation}
+where $M_{b,i}^{*}$ is the bridge modal mass evaluated using the same mode-shape normalisation.
+
+
+%Define exactly what you infer, distinguish modal mass from physical or linear mass, and explain how mass ratio is calculated for a specified pedestrian density.
+
+\subsection{Posterior sampling and model assessment}
+%Software, sampling settings, convergence checks, predictive checks, and any validation using withheld observations.
+
+\section{Results}
+\subsection{Database characteristics and observed distributions}
+%Material composition, frequency and span distributions, and observed damping and mass data. Keep the screening counts in Section 2.
+\subsection{Damping-model assessment and inferred damping distribution}
+%Evidence of model adequacy, predictions for missing damping, and the resulting damping CDF with uncertainty.
+\subsection{Mass-model assessment and inferred mass-ratio distribution}
+%Corresponding evidence and population results for mass ratio.
+\subsection{Joint prevalence of serviceability-relevant properties}
+%How often relevant frequency, damping and mass-ratio conditions occur together, retaining dependence and uncertainty.
 
 \section{Discussion}
 
@@ -171,6 +310,10 @@ The resulting differences in data completeness, particularly for damping and mas
 \section{Acknowledgements}
 This research is supported by an Australian Government Research Training Program (RTP) stipend Scholarship and Monash International Tuition Scholarship (MITS). 
 
+%\clearpage
+%\appendix
+%\section{Footbridge database}
+%\input{Appendix/footbridge_database_appendix}
 % ============================================================
 % REFERENCES
 % ============================================================
