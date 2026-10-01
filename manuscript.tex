@@ -13,6 +13,7 @@
 \usepackage[unicode]{hyperref}
 \usepackage[noabbrev,nameinlink]{cleveref}
 \usepackage{amssymb}
+
 % In the preamble
 \usepackage{longtable,booktabs,pdflscape,array,natbib}
 % ============================================================
@@ -159,9 +160,9 @@ The original experimental investigation was retained as the principal source whe
 
 \subsection{Resulting database and data completeness}
 
-Following bridge-level screening and duplicate reconciliation, 248 unique footbridges were retained in the final database.
+Following bridge-level screening and duplicate reconciliation, 250 unique footbridges were retained in the final database.
 Fundamental vertical natural frequency and span were available for all bridges, while deck width was available for 240 bridges.
-Vertical damping ratios were reported for 102 bridges, whereas mass related information was considerably less complete, with modal mass information available for only 30 bridges and linear mass available for 25 bridges.
+Vertical damping ratios were reported for 100 bridges, whereas mass related information was considerably less complete, with modal mass information available for only 30 bridges and linear mass available for 25 bridges.
 Structural form and material information were available for all bridges, while cross-section information was available for 242 bridges.
 The resulting differences in data completeness, particularly for damping and mass-related properties, motivated the probabilistic treatment introduced in the following section.
 
@@ -180,14 +181,21 @@ Analysing only bridges with complete records would therefore exclude a substanti
 To retain these bridges in the population analysis, Bayesian regression models were developed to infer the unreported properties from the available bridge characteristics. 
 The missing values were represented by posterior predictive distributions, allowing uncertainty in both regression parameters and remaining variability between bridges to be propagated into resulting population distributions. 
 
-\subsection{Hierarchical model for vertical damping ratio}
+\subsection{Hierarchical model for vertical damping ratio}\label{sec:damping_model}
 
 Let \(\xi_{i}\) denote the damping ratio of the first vertical mode for the \(i\)-th bridge.
 The damping ratios \(\xi_i\) differ between bridges, reflecting differences in their construction materials, structural forms, and other factors.
 However, the database does not provide sufficient details to model the physical mechanisms governing damping in each bridge.
-Statistical modelling offers a means of estimating unreported values from observed data without explicitly identifying the underlying mechanisms \cite{mcelreath2018statistical}.
+Statistical modelling offers a means of estimating unreported values from observed data without explicitly identifying the underlying mechanisms \cite{mcelreath2018statistical,hwang2023deep,zhang2022bayesian}.
 Accordingly, a Bayesian hierarchical regression model was fitted to the reported damping ratios, using natural frequency, span, and material as predictors that are available in the database.
-The fitted model was then used to obtain posterior predictive distributions for unreported damping ratios, accounting for both uncertainty in the regression parameters and remaining variability between bridges.
+The fitted model was then used to obtain posterior predictive distributions for unreported damping ratios, accounting for both uncertainty in the regression parameters and remaining variability between bridges.The probabilistic structure of the hierarchical damping model is shown in Fig.~\ref{fig:damping_model}.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/fig_damping_model.pdf}
+    \caption{Probabilistic structure of the hierarchical Bayesian
+    model for vertical damping ratio.}
+    \label{fig:damping_model}
+\end{figure}
 
 For each bridge, the available predictor information is \({x}_i=\{f_i,L_i,m_i\}\), where $f_i$ is the fundamental vertical natural frequency, $L_i$ is the span, and $m_i$ denotes the material category.
 Let $\mathcal{O}$ and $\mathcal{M}$ denote the sets of bridges
@@ -266,7 +274,7 @@ This distribution accounts for both uncertainty in the model parameters and the 
 Samples from these distributions were used to represent the missing damping ratios in the subsequent population analysis.
 
 \subsection{Bayesian estimation of pedestrian-to-structure
-mass-ratio probabilities}
+mass-ratio probabilities}\label{sec:mass_ratio_model}
 
 The pedestrian-to-structure mass ratio depends on both the bridge modal properties and the distribution of pedestrians.
 The present analysis therefore considers the prevalence of mass ratios at a specified pedestrian density $\rho$.
@@ -285,20 +293,167 @@ The pedestrian-to-structure modal mass ratio is then,
     =
     \frac{M_{p,i}^{*}(\rho)}{M_{b,i}^{*}},
 \end{equation}
-where $M_{b,i}^{*}$ is the bridge modal mass evaluated using the same mode-shape normalisation.
+where $M_{b,i}^{*}$ is the bridge modal mass evaluated using the same mode-shape $\phi_i$.
 
+Sufficient information to calculate modal mass ratios is available for only a subset of bridges in the database.
+A Bayesian model was therefore used to estimate the proportion of bridges whose mass ratios fall below a specified threshold $T$, without estimating a missing mass ratio for each bridge.
+Threshold probabilities were estimated separately for each material category and then combined according to the estimated prevalence of these categories.
+The probabilistic structure of the Bayesian mass-ratio model is shown in
+\Cref{fig:mass_ratio_model}.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/fig_mass_ratio_bayesian_model.pdf}
+    \caption{Probabilistic structure of the Bayesian model for pedestrian-to-structure mass-ratio probabilities.}
+    \label{fig:mass_ratio_model}
+\end{figure}
+
+For a material catagory $m$, let $\theta_m(T;\rho)$ be,
+\begin{equation}
+    \theta_m(T;\rho)
+    =
+    P\bigl(\mu(\rho)<T\mid m\bigr).
+\end{equation}
+Let $n_m$ be the number of bridges with calculable mass ratios in category $m$, and let $k_m(T;\rho)$ be the number of these bridges whose mass ratios are below the threshold $T$.
+The first likelihood  related these counts to the material specific threshold probability:
+\begin{equation}
+    k_m(T;\rho)
+    \sim \operatorname{Binomial}
+    \bigl(n_m,\theta_m(T;\rho)\bigr),
+\end{equation}
+This formulation assumes that bridges with calculable mass ratios are representative of their material category with respect to mass ratio.
+
+The second likelyhood describes the material composition of the full database.
+Let $N_m$ be the total number of bridges in material category $m$, including those without calculable mass ratios, and let $w_m=P(m)$ denote the corresponding population proportion.
+For $M$ mutually exclusive and exhaustive material categories,
+\begin{equation}
+    N_{mat}\mid{w}
+    \sim
+    \operatorname{Multinomial}(N,{w}),
+\end{equation}
+where $N_{mat}=(N_1,\ldots,N_M)$, ${w}=(w_1,\ldots,w_M)$,
+$N=\sum_{m=1}^{M}N_m$, and $\sum_{m=1}^{M}w_m=1$.
+Consequently, all bridges contribute to estimating the material proportions, while only bridges with calculable mass ratios contribute to estimating the material-specific threshold probabilities.
+The prior distributions for these parameters are specified in the following subsection.
+
+The material proportions and threshold probabilities were combined using the law of total probability:
+\begin{equation}
+    \begin{aligned}
+    P\bigl(\mu(\rho)<T\bigr)
+    &=
+    \sum_{m=1}^{M}
+    P(m)\,P\bigl(\mu(\rho)<T\mid m\bigr) \\
+    &=
+    \sum_{m=1}^{M}
+    w_m\,\theta_m(T;\rho).
+    \end{aligned}
+    \label{eq:mass_ratio_probability}
+\end{equation}
+Each product gives the probability that a bridge belongs to material category $m$ and has a mass ratio below $T$.
+Summing across the material categories give the overall proportion of bridges below the threshold.
+
+To propagate uncertainty in both components, the overall probability was evaluated for each posterior sample $s$:
+\begin{equation}
+    F_{\mu}^{(s)}(T;\rho)
+    =
+    \sum_{m=1}^{M}
+    w_m^{(s)}\,\theta_m^{(s)}(T;\rho).
+\end{equation}
+The resulting samples account for uncertainty in both the material proportions and the material-specific threshold probabilities.
+
+The calculation was repeated over a range of thresholds $T$ at a specified pedestrian density $\rho$ to characterise the cumulative distribution of pedestrian-to-structure mass ratio. 
+At each threshold, the posterior mean and 95\% creadible interval were calculated for $P\bigl(\mu(\rho)<T\bigr)$.
+Lower and upper bound of these pointwise creadble intervals define the bounding curves of a probability box (p-box), allowing the estrimated proportion of bridges below any selected mass ratio threshold to be assessed together with its uncertianty.
 
 %Define exactly what you infer, distinguish modal mass from physical or linear mass, and explain how mass ratio is calculated for a specified pedestrian density.
 
-\subsection{Posterior sampling and model assessment}
-%Software, sampling settings, convergence checks, predictive checks, and any validation using withheld observations.
+\subsection{Prior specification and posterior computation}
+% Prior distributions, software, sampling algorithm and settings.
+As described in the \Cref{sec:damping_model}, the damping model contains 12 unknown model parameters, including the intercept $\alpha$, two regression coefficients $\beta_f$ and $\beta_L$, the residual standard deviation $\sigma$, and the between-material standard deviation $\sigma_{\mathrm{mat}}$.
+The remaining seven parameters are the material-specific effects $a_m$, corresponding to the seven material categories represented in the database: steel, concrete, composite, fibre-reinforced polymer (FRP), aluminium, timber, and other materials.
+Unreported damping ratios are additional latent quantitieswhose distributions are inferred from the model.
+
+The intercept and regression coefficients were assigned normal priors:
+\begin{equation}
+    \alpha \sim \mathcal{N}\bigl(\log(0.01),1^2\bigr),
+    \qquad
+    \beta_f,\beta_L \sim \mathcal{N}(0,0.5^2),
+\end{equation}
+where the second argument denotes the variance.
+The prior for $\alpha$ was centred at $\log(0.01)$, corresponding to a baseline damping ratio of 1\%. 
+This value was selected to place the prior within the range commonly associated with footbridge vibration serviceability, where damping ratios are generally between 0.4\% to 2\% \cite{EN1991_2_2023,setra2006,feldman2008hivoss} for vibrations under pedestrian excitaions and vary with construction material.
+The relatively broad prior on the logarithmic scale allows the observations and material specific effects to shift the baseline towards both lower and higher values.
+
+The regression coefficients were assigned zero-mean priors, reflecting the absence of prior knowledge about the direction of their effects and to avoid favouring any particular relationship between damping and the predictors.
+Because the log-transformed predictors were standardised, the same prior scale was used for both coefficients, regularising large effects while allowing the observations to inform their direction and magnitude.
+
+The material-specific effects were assigned a shared normal prior,
+\begin{equation}
+    a_m \mid \sigma_{\mathrm{mat}}
+    \sim
+    \mathcal{N}\bigl(0,\sigma_{\mathrm{mat}}^2\bigr).
+\end{equation}
+This prior treats the material effects as deviations from the common regression relationship, centered at zero.
+Sharing the same distribution across material categories allows partial pooling, so that material categories with few observations can borrow information from those with more data, while still allowing for differences between categories.
+The between-material standard deviation controls the extent of variation among the material effects and was assigned the prior
+\begin{equation}
+    \sigma_{\mathrm{mat}}
+    \sim
+    \operatorname{Exponential}(4).
+\end{equation}
+An exponential prior was used because $\sigma_{\mathrm{mat}}$ is a
+positive scale parameter.
+This prior restricts $\sigma_{\mathrm{mat}}$ to positive values and places greater prior probability on relatively small differences between material categories while retaining support for larger differences if required by the data.
+
+The remaining bridge-to-bridge variability not explained by the predictors
+or material effects is represented by the residual standard deviation
+$\sigma$, for which the prior
+\begin{equation}
+    \sigma \sim \operatorname{Exponential}(2)
+\end{equation}
+was adopted.
+The exponential prior similarly restricts the residual standard deviation to positive values while allowing substantial unexplained variability between bridges.
+
+For computation, the material effects were expressed using the non-centred parameterisation
+\begin{equation}
+    z_m \sim \mathcal{N}(0,1),
+    \qquad
+    a_m=\sigma_{\mathrm{mat}}z_m.
+\end{equation}
+
+For the mass-ratio model described in \Cref{sec:mass_ratio_model}, prior distributions were required for the material proportions $w_m$ and the material-specific threshold probabilities $\theta_m(T;\rho)$.
+The material proportions were assigned a symmetric Dirichlet prior,
+\begin{equation}
+    w
+    \sim
+    \operatorname{Dirichlet}(1,\ldots,1),
+\end{equation}
+where the number of concentration parameters corresponds to the number of material categories considered in the mass-ratio analysis.
+This prior treats the material categories symmetrically and does not favour any particular composition of the bridge population before observing the material counts in the database.
+
+The material-specific threshold probabilities were assigned independent uniform beta priors,
+\begin{equation}
+    \theta_m(T;\rho)
+    \sim
+    \operatorname{Beta}(1,1).
+\end{equation}
+This prior assigns equal density to all probabilities between zero and one and therefore does not favour a particular probability that the mass ratio falls below the selected threshold within any material category.
+The same prior specification for $\theta_m(T;\rho)$ was applied independently at each threshold $T$, whereas the material proportions $w$ describe the common material composition of the database and are therefore unchanged across thresholds.
+
+Both Bayesian models were implemented in PyMC and posterior sampling was performed using the No-U-Turn Sampler (NUTS), an adaptive Hamiltonian Monte Carlo algorithm. 
+For each model, four independent chains were run with 2000 tuning iterations followed by 2000 retained posterior samples per chain, using a target acceptance probability of 95\%.
+
+\subsection{Model assessment procedures}  
+% Convergence diagnostics, predictive checks, validation using
+% withheld observations, and sensitivity analyses actually performed.
+
+
 
 \section{Results}
 \subsection{Database characteristics and observed distributions}
 %Material composition, frequency and span distributions, and observed damping and mass data. Keep the screening counts in Section 2.
-\subsection{Damping-model assessment and inferred damping distribution}
+\subsection{Population distribution of vertical damping ratio}
 %Evidence of model adequacy, predictions for missing damping, and the resulting damping CDF with uncertainty.
-\subsection{Mass-model assessment and inferred mass-ratio distribution}
+\subsection{Population distribution of pedestrian-to-structure mass ratio}
 %Corresponding evidence and population results for mass ratio.
 \subsection{Joint prevalence of serviceability-relevant properties}
 %How often relevant frequency, damping and mass-ratio conditions occur together, retaining dependence and uncertainty.
