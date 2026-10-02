@@ -374,9 +374,9 @@ Unreported damping ratios are additional latent quantitieswhose distributions ar
 
 The intercept and regression coefficients were assigned normal priors:
 \begin{equation}
-    \alpha \sim \mathcal{N}\bigl(\log(0.01),1^2\bigr),
+    \alpha \sim \mathcal{N}\bigl(\log(0.01),0.5^2\bigr),
     \qquad
-    \beta_f,\beta_L \sim \mathcal{N}(0,0.5^2),
+    \beta_f,\beta_L \sim \mathcal{N}(0,0.25^2),
 \end{equation}
 where the second argument denotes the variance.
 The prior for $\alpha$ was centred at $\log(0.01)$, corresponding to a baseline damping ratio of 1\%. 
@@ -398,7 +398,7 @@ The between-material standard deviation controls the extent of variation among t
 \begin{equation}
     \sigma_{\mathrm{mat}}
     \sim
-    \operatorname{Exponential}(4).
+    \operatorname{Exponential}(6).
 \end{equation}
 An exponential prior was used because $\sigma_{\mathrm{mat}}$ is a
 positive scale parameter.
@@ -408,17 +408,23 @@ The remaining bridge-to-bridge variability not explained by the predictors
 or material effects is represented by the residual standard deviation
 $\sigma$, for which the prior
 \begin{equation}
-    \sigma \sim \operatorname{Exponential}(2)
+    \sigma \sim \operatorname{HalfNormal}(0.3)
 \end{equation}
 was adopted.
-The exponential prior similarly restricts the residual standard deviation to positive values while allowing substantial unexplained variability between bridges.
+The half-normal prior similarly restricts the residual standard deviation to positive values while allowing substantial unexplained variability between bridges.
 
-For computation, the material effects were expressed using the non-centred parameterisation
+For computation, the material effects were expressed using a non-centred parameterisation with a sum-to-zero constraint,
 \begin{equation}
     z_m \sim \mathcal{N}(0,1),
     \qquad
-    a_m=\sigma_{\mathrm{mat}}z_m.
+    \bar z = \frac{1}{M}\sum_{j=1}^{M} z_j,
+    \qquad
+    a_m
+    =
+    \sigma_{\mathrm{mat}}
+    \left(z_m-\bar z\right).
 \end{equation}
+The centring ensures that $\sum_{m=1}^{M} a_m = 0$, so that the material effects represent deviations from the common intercept $\alpha$.
 
 For the mass-ratio model described in \Cref{sec:mass_ratio_model}, prior distributions were required for the material proportions $w_m$ and the material-specific threshold probabilities $\theta_m(T;\rho)$.
 The material proportions were assigned a symmetric Dirichlet prior,
@@ -445,7 +451,42 @@ For each model, four independent chains were run with 2000 tuning iterations fol
 \subsection{Model assessment procedures}  
 % Convergence diagnostics, predictive checks, validation using
 % withheld observations, and sensitivity analyses actually performed.
+\subsubsection{Vertical damping model}
+The vertical damping model was assessed through prior predictive checks, sampling diagnostics, comparison of prior and posterior parameter distributions, and posterior predictive checks.
+Prior predictive sampling was first used to examine whether the specified priors produced plausible damping ratios over the range of bridge characteristics represented in the database.
+\Cref{fig:prior_predictive_check_damping} compares the resulting prior predictive PDF and CDF with the observed damping ratios.
+As shown in \Cref{fig:prior_predictive_check_damping}(a), the prior predictive distribution is concentrated in the low-damping region, where most of the observations occur, while retaining support over the upper range of the observed damping ratios. 
+This is also evident from \Cref{fig:prior_predictive_check_damping}(b), where the observed empirical CDF remains within the 95\% prior predictive interval over the considered range.
+No substantial prior--data conflict was identified. 
+The adopted priors were therefore considered sufficiently broad to represent plausible damping behaviour without placing excessive probability on unrealistically large damping ratios.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]
+    {figures/fig_prior_predictive_check_damping.pdf}
+    \caption{Prior predictive assessment of the vertical damping model:
+    (a) prior predictive and observed damping distributions; and
+    (b) prior predictive median CDF and 95\% interval compared with the
+    observed empirical CDF.}
+    \label{fig:prior_predictive_check_damping}
+\end{figure}
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]
+    {figures/fig_trace_plots_all_parameters.pdf}
+    \caption{Posterior sampling diagnostics for the vertical damping model.
+    The left column shows marginal posterior distributions for the four
+    sampling chains and the right column shows the corresponding trace plots
+    for the global parameters and material-specific effects.}
+    \label{fig:trace_damping}
+\end{figure}
+
+Posterior sampling performance was assessed using the marginal posterior distributions and trace plots shown in \Cref{fig:trace_damping}.
+The four chains exhibited substantial overlap for the global parameters and material-specific effects, while the trace histories showed stationary behaviour with no persistent trends or visible separation between chains.
+No divergent transitions were observed. 
+The potential scale reduction statistics were close to unity for all monitored parameters ($\hat{R}=0.9999$--$1.0010$), with minimum bulk and tail effective sample sizes of approximately 2505 and 2294, respectively. These diagnostics indicated satisfactory convergence and effective exploration of the posterior distribution.
+
+\subsubsection{Mass-ratio probability model}
 
 
 \section{Results}
