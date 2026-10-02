@@ -486,6 +486,29 @@ The four chains exhibited substantial overlap for the global parameters and mate
 No divergent transitions were observed. 
 The potential scale reduction statistics were close to unity for all monitored parameters ($\hat{R}=0.9999$--$1.0010$), with minimum bulk and tail effective sample sizes of approximately 2505 and 2294, respectively. These diagnostics indicated satisfactory convergence and effective exploration of the posterior distribution.
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]
+    {figures/fig_prior_vs_posterior_damping_parameters.pdf}
+    \caption{Comparison of prior and posterior distributions.}
+    \label{fig:prior_vs_posterior_damping_parameters}
+\end{figure}
+
+The extent to which the observed damping data informed the model parameters was examined by comparing the prior and posterior distributions in \Cref{fig:prior_vs_posterior_damping_parameters}.
+The posterior distributions are generally more concentrated than their corresponding priors, indicating that the observed data provide substantial information for the model parameters.
+
+The posterior distribution of the intercept $\alpha$ is considerably narrower than its prior and is centred at approximately $-4.51$, corresponding to a conditional median damping ratio of approximately $1.1\%$ at the reference values of the standardised predictors and zero material effect.
+The posterior distributions of $\beta_f$ and $\beta_L$ indicates a tendency for damping to increase with natural frequencye and decrease with span respectively. 
+However, both posterior distributions retain an appeciable probability on either side of zero, indicating uncertainty in the strength and dirrection of these effects.
+
+The posterior distribution of $\sigma_{\mathrm{mat}}$ is shifted away from the strong concentration near zero imposed by its prior, indicating that the data support variability in damping between material categories. 
+Similarly, the posterior distribution of the residual standard deviation $\sigma$ is strongly concentrated relative to its prior, indicating substantial remaining bridge-to-bridge variability after accounting for frequency, span, and material.
+
+The material-specific posterior distributions have different drifts fromcommon baseline.
+Steel exhibits a clear negative material effect, indicating lower damping relative to the overall baseline. 
+FRP and timber show tendencies towards positive material effects, whereas steel-concrete composite and concrete show slight negative material. 
+The posterior distributions for the unknown-material and aluminium categories remain relatively broad and centred close to zero, reflecting the limited information available for these two categories.
+
 \subsubsection{Mass-ratio probability model}
 
 
