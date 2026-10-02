@@ -510,6 +510,43 @@ FRP and timber show tendencies towards positive material effects, whereas steel-
 The posterior distributions for the unknown-material and aluminium categories remain relatively broad and centred close to zero, reflecting the limited information available for these two categories.
 
 \subsubsection{Mass-ratio probability model}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1.1\textwidth]
+    {figures/fig_prior_predictive_check_mass_ratio_5groups.pdf}
+    \caption{Prior predictive assessment of the pedestrian-to-structure
+    mass-ratio probability model at $T=0.30$: (a) prior-implied distribution of the overall probability $P(\mu_{\mathrm{occ}}<0.30)$;
+    (b) prior predictive intervals for the material composition of the bridge population compared with the observed material counts; and
+    (c) prior predictive intervals for the material-specific threshold
+    proportions $k_m(T)/n_m$ compared with the observed proportions.}
+    \label{fig:prior_predictive_check_mass_ratio}
+\end{figure}
+
+The mass-ratio probability model was also assessed through prior predictive checks, sampling diagnostics, comparison of prior and posterior parameter distributions, and posterior predictive checks. 
+Since the model is evaluated over a sequence of mass-ratio thresholds, prior predictive checks were performed across the full range of $T$.
+The results at $T=0.30$ are shown here as a reference case. 
+At this threshold, the prior predictive behaviour was evaluated for the overall probability $P(\mu_{\mathrm{occ}}<T)$, the material composition of the full bridge database, and the material-specific proportions of bridges with calculable mass ratios below the threshold.
+
+For the mass-ratio analysis, sufficient observations were available to retain steel, concrete, steel-concrete composite, and FRP as separate material categories. 
+The remaining materials represented in the database, including timber and aluminium, had insufficient mass-ratio information to estimate material-specific probabilities separately and were therefore grouped into an ''Other'' category. 
+The mass-ratio model consequently considered five material groups.
+
+\Cref{fig:prior_predictive_check_mass_ratio} presents the resulting prior predictive assessment. 
+\Cref{fig:prior_predictive_check_mass_ratio}(a) shows the distribution implied by the priors for the overall probability $P(\mu_{\mathrm{occ}}<0.30)$. 
+The distribution is centred close to 0.5 and remains broad, reflecting the symmetric Dirichlet prior on the material proportions and the uniform $\mathrm{Beta}(1,1)$ priors assigned to the material-specific threshold probabilities. 
+Thus, before conditioning on the observations, the prior specification does not favour either a high or low population probability of falling below the selected threshold.
+The prior predictive distribution of the material counts is compared with the observed composition of the full bridge database in \Cref{fig:prior_predictive_check_mass_ratio}(b). 
+The observed counts for the five material groups fall within the corresponding 95\% prior predictive intervals, indicating that the prior on the material proportions allows the degree of imbalance present in the assembled bridge population.
+\Cref{fig:prior_predictive_check_mass_ratio}(c) compares the observed material-specific proportions $k_m(T)/n_m$ with their prior predictive intervals at $T=0.30$, where $n_m$ is the number of bridges in material category $m$ with a calculable mass ratio and $k_m(T)$ is the number of those bridges with $\mu_{\mathrm{occ}}<T$. 
+The observed proportions remain within the corresponding prior predictive intervals for all material groups.
+The broad intervals reflect the deliberately weak $\mathrm{Beta}(1,1)$ prior and, for some material categories, the small number of available mass-ratio observations. 
+Overall, the prior predictive checks did not indicate a substantial conflict between the adopted priors and the observed count data.
+
+Sampling convergence was assessed using the rank-normalised $\hat{R}$ statistic, effective sample size, trace plots, and divergent
+transitions. 
+For the representative mass-ratio model at $T=0.30$, all $\hat{R}$ values were close to 1.00 and effective sample sizes were large for both the bulk and tails of the posterior distributions, indicating satisfactory convergence and mixing across the four chains.
+
+
 
 
 \section{Results}
